@@ -1,9 +1,9 @@
 package com.kids.alpha.shinhansec.service;
 
-import com.kids.alpha.shinhansec.domain.entity.User;
+import com.kids.alpha.shinhansec.domain.entity.Member;
 import com.kids.alpha.shinhansec.jwt.JwtTokenProvider;
 import com.kids.alpha.shinhansec.jwt.TokenInfo;
-import com.kids.alpha.shinhansec.repository.UserRepository;
+import com.kids.alpha.shinhansec.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
-    private final UserRepository userRepository;
+public class MemberService {
+    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -28,7 +28,7 @@ public class UserService {
 
             // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
             // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-        if (passwordEncoder.matches(password, userRepository.findByAccountNumber(accountNumber).orElseThrow().getPassword())) {
+        if (passwordEncoder.matches(password, memberRepository.findByAccountNumber(accountNumber).orElseThrow().getPassword())) {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(accountNumber, password);
 
                 // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
@@ -52,7 +52,7 @@ public class UserService {
     @Transactional
     public ResponseEntity<String> signin(String accountNumber, String password) throws Exception {
         try {
-                userRepository.save(User.builder()
+                memberRepository.save(Member.builder()
                                 .accountNumber(accountNumber)
                                 .password(passwordEncoder.encode(password))
                         .build());

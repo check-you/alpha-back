@@ -2,7 +2,7 @@ package com.kids.alpha.shinhansec.controller;
 
 import com.kids.alpha.shinhansec.DTO.LogInRequestDTO;
 import com.kids.alpha.shinhansec.DTO.SignInRequestDTo;
-import com.kids.alpha.shinhansec.service.UserService;
+import com.kids.alpha.shinhansec.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
-public class UserController {
-    private final UserService userService;
+public class MemberController {
+    private final MemberService memberService;
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LogInRequestDTO userLoginRequestDto) throws Exception {
-        return userService.login(userLoginRequestDto.getAccountNumber(), userLoginRequestDto.getPassword());
+        return memberService.login(userLoginRequestDto.getAccountNumber(), userLoginRequestDto.getPassword());
     }
     @PostMapping("/signIn")
     public ResponseEntity signin(@RequestBody SignInRequestDTo userSignInRequestDto) throws Exception {
-        return userService.signin(userSignInRequestDto.getAccountNumber(), userSignInRequestDto.getPassword());
+        return memberService.signin(userSignInRequestDto.getAccountNumber(), userSignInRequestDto.getPassword());
     }
 }
