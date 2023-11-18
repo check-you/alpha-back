@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-@Table(name="user")
+@Table(name="member")
 @NoArgsConstructor
 @Getter
 @EntityListeners(AuditingEntityListener.class) // 추가
@@ -26,15 +26,23 @@ public class Member implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "account_number")
+    @Column(name = "account_number", length = 60)
     @NotNull
     private String accountNumber;
 
-    @Column(name = "password")
+    @Column(name = "password", length = 255)
     @NotNull
     private String password;
 
-    @Column(name = "role")
+    @Column(name = "phone_number", length = 25)
+    @NotNull
+    private String phoneNumber;
+
+    @Column(name = "email", length = 70)
+    @NotNull
+    private String email;
+
+    @Column(name = "role", length = 10)
     @NotNull
     private String role;
 
