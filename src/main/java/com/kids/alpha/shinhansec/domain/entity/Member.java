@@ -20,7 +20,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @Getter
 @EntityListeners(AuditingEntityListener.class) // 추가
-public class User implements UserDetails {
+public class Member implements UserDetails {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,7 +79,7 @@ public class User implements UserDetails {
         return true;
     }
     @Builder
-    public User(String accountNumber, String password){
+    public Member(String accountNumber, String password){
         this.accountNumber = accountNumber;
         this.password = password;
         this.role = "USER";
