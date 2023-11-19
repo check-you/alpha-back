@@ -13,9 +13,22 @@ spring:
         show_sql: true
         format_sql: true
         default_batch_fetch_size: 3
-  redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_HOST}
+    password: ${EMAIL_HOST_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
 logging:
   level:
     org.springframework.orm.jpa: DEBUG
@@ -24,4 +37,6 @@ logging:
     org.springframework.transaction: DEBUG
 jwt:
   secret: ${SECRET_KEY}
-
+email:
+  domain: ${EMAIL_DOMAIN}
+  url: ${EMAIL_URL}
