@@ -1,11 +1,13 @@
 package com.checkyou.shinhansec.service;
 
-import com.checkyou.shinhansec.DTO.EmailAuthRequestDto;
-import com.checkyou.shinhansec.common.ApiResponse;
+import com.checkyou.shinhansec.DTO.AccountDeleteRequestDTO;
+import com.checkyou.shinhansec.DTO.AccountRequestDTO;
+import com.checkyou.shinhansec.domain.entity.Account;
 import com.checkyou.shinhansec.domain.entity.EmailAuth;
 import com.checkyou.shinhansec.domain.entity.Member;
 import com.checkyou.shinhansec.jwt.JwtTokenProvider;
 import com.checkyou.shinhansec.jwt.TokenInfo;
+import com.checkyou.shinhansec.repository.AccountRepository;
 import com.checkyou.shinhansec.repository.EmailAuthRepository;
 import com.checkyou.shinhansec.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -101,5 +104,25 @@ public class MemberService {
         Member member = memberRepository.findByEmail(email).orElseThrow();
         emailAuth.useToken();
         member.emailVerifiedSuccess();
+    }
+
+    @Transactional
+    public void createNewAccount(AccountRequestDTO request, String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow();
+
+        Account account = Account.builder()
+                .account(request.getAccount())
+                .bank(request.getBank())
+                .member(member)
+                .build();
+
+        accountRepository.save(account);
+    }
+
+    @Transactional
+    public void deleteAccount(AccountDeleteRequestDTO request) {
+        Account account = accountRepository.findByAccount(request.getAccount()).orElseThrow();
+
+        accountRepository.delete(account);
     }
 }
