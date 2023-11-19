@@ -12,9 +12,6 @@ public class SearchService {
     private final UriRequestService uriRequestrService;
 
     public SearchResponse searchInformation(SearchRequestDTO request) {
-
-        SearchResponse response = uriRequestrService.getInformation(request);
-
-        return response;
+        return uriRequestrService.getInformation(request);
     }
 }

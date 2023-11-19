@@ -31,8 +31,10 @@ public class Account {
     @NotNull
     private String account;
 
-    @ManyToOne
-    @JoinColumn(name="id")
+    @ManyToOne(
+            fetch = FetchType.LAZY
+    )
+    @JoinColumn(name = "member_id")
     private Member member;
 
 }

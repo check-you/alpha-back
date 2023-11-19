@@ -26,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserDetails createUserDetails(Member member) {
         UserInfo userInfo = new UserInfo(
                 member.getId(),
-                member.getUsername()
+                member.getEmail()
         );
         return User.builder()
                 .username(userInfo.toString())

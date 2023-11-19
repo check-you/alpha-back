@@ -4,6 +4,7 @@ import com.checkyou.shinhansec.DTO.AccountDeleteRequestDTO;
 import com.checkyou.shinhansec.DTO.AccountRequestDTO;
 import com.checkyou.shinhansec.DTO.LogInRequestDTO;
 import com.checkyou.shinhansec.DTO.SignInRequestDTO;
+import com.checkyou.shinhansec.common.ApiResponse;
 import com.checkyou.shinhansec.jwt.TokenInfo;
 import com.checkyou.shinhansec.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -31,19 +32,4 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/accounts/new")
-    public ResponseEntity<?> createAccount(@RequestBody AccountRequestDTO request, Principal principal){
-
-        memberService.createNewAccount(request, principal.getName());
-
-        return ResponseEntity.ok("처리되었습니다.");
-    }
-
-    @DeleteMapping("/accounts")
-    public ResponseEntity<?> createAccount(@RequestBody AccountDeleteRequestDTO request ){
-
-        memberService.deleteAccount(request);
-
-        return ResponseEntity.ok("처리되었습니다.");
-    }
 }
