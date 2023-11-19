@@ -2,6 +2,8 @@ package com.checkyou.shinhansec.service;
 
 import com.checkyou.shinhansec.DTO.AccountDeleteRequestDTO;
 import com.checkyou.shinhansec.DTO.AccountRequestDTO;
+import com.checkyou.shinhansec.DTO.RequestPrincipalDTO;
+import com.checkyou.shinhansec.common.ApiResponse;
 import com.checkyou.shinhansec.domain.entity.Account;
 import com.checkyou.shinhansec.domain.entity.EmailAuth;
 import com.checkyou.shinhansec.domain.entity.Member;
@@ -10,7 +12,9 @@ import com.checkyou.shinhansec.jwt.TokenInfo;
 import com.checkyou.shinhansec.repository.AccountRepository;
 import com.checkyou.shinhansec.repository.EmailAuthRepository;
 import com.checkyou.shinhansec.repository.MemberRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -107,22 +112,40 @@ public class MemberService {
     }
 
     @Transactional
-    public void createNewAccount(AccountRequestDTO request, String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow();
+    public ApiResponse<String> createNewAccount(AccountRequestDTO request, String principal) throws Exception {
+        try {
+            if(checkDuplicateAccount(request.getAccount()))
+                throw new Exception("중복된 계좌 번호입니다.");
+            String email = new ObjectMapper().readValue(principal, RequestPrincipalDTO.class).getNickname();
 
-        Account account = Account.builder()
-                .account(request.getAccount())
-                .bank(request.getBank())
-                .member(member)
-                .build();
+            Member member = memberRepository.findByEmail(email).orElseThrow();
 
-        accountRepository.save(account);
+            Account account = Account.builder()
+                    .account(request.getAccount())
+                    .bank(request.getBank())
+                    .member(member)
+                    .build();
+
+            return ApiResponse.success(accountRepository.save(account).getAccount() + " 계좌 생성 완료되었습니다.");
+        }catch (Exception e){
+            throw new Exception("계좌 생성에 실패하였습니다.");
+        }
+    }
+
+    private boolean checkDuplicateAccount(String account) {
+        return accountRepository.findByAccount(account).isPresent();
     }
 
     @Transactional
-    public void deleteAccount(AccountDeleteRequestDTO request) {
-        Account account = accountRepository.findByAccount(request.getAccount()).orElseThrow();
+    public void deleteAccount(AccountDeleteRequestDTO request) throws Exception {
+        try {
+            Account account = accountRepository.findByAccount(request.getAccount()).orElseThrow();
 
-        accountRepository.delete(account);
+            accountRepository.delete(account);
+
+        }catch (Exception e){
+            throw new Exception("계좌 삭제에 실패하였습니다.");
+        }
     }
+
 }

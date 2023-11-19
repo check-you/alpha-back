@@ -29,8 +29,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 //각 ROLE에 따라 접근 구분
+                .antMatchers("/api/account/*").hasRole("USER")
                 .antMatchers("/api/user/*").permitAll()
-//                .antMatchers("/api/user/signIn").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
