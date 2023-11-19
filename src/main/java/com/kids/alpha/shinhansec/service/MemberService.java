@@ -1,8 +1,12 @@
 package com.kids.alpha.shinhansec.service;
 
+import com.kids.alpha.shinhansec.DTO.AccountDeleteRequestDTO;
+import com.kids.alpha.shinhansec.DTO.AccountRequestDTO;
+import com.kids.alpha.shinhansec.domain.entity.Account;
 import com.kids.alpha.shinhansec.domain.entity.Member;
 import com.kids.alpha.shinhansec.jwt.JwtTokenProvider;
 import com.kids.alpha.shinhansec.jwt.TokenInfo;
+import com.kids.alpha.shinhansec.repository.AccountRepository;
 import com.kids.alpha.shinhansec.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -18,9 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
+
     @Transactional
     public ResponseEntity<TokenInfo> login(String accountNumber, String password) throws Exception {
 //        try {
@@ -60,5 +66,25 @@ public class MemberService {
         }catch (Exception e){
             throw new Exception("회원가입 요청에 실패하였습니다.");
         }
+    }
+
+
+    public void createNewAccount(AccountRequestDTO request, String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow();
+
+        Account account = Account.builder()
+                                    .account(request.getAccount())
+                                    .bank(request.getBank())
+                                    .member(member)
+                                    .build();
+
+        accountRepository.save(account);
+    }
+
+    public void deleteAccount(AccountDeleteRequestDTO request, String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow();
+        Account account = accountRepository.findByAccount(request.getAccount()).orElseThrow();
+
+        accountRepository.delete(account);
     }
 }
