@@ -178,4 +178,14 @@ public class MemberService {
             throw new Exception("에러 발생");
         }
     }
+
+    public ApiResponse<Boolean> checkAuthentication(String email) throws Exception {
+        try {
+            if (memberRepository.findByEmail(email).orElseThrow().getEmailAuth())
+                return ApiResponse.success(true);
+            else throw new Exception("이메일 인증이 되지 않았습니다.");
+        }catch (Exception e){
+            throw new Exception("오류 발생하였습니다.");
+        }
+    }
 }

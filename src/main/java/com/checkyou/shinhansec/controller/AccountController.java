@@ -4,6 +4,7 @@ import com.checkyou.shinhansec.DTO.*;
 import com.checkyou.shinhansec.common.ApiResponse;
 import com.checkyou.shinhansec.service.MemberService;
 import com.checkyou.shinhansec.service.SearchService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

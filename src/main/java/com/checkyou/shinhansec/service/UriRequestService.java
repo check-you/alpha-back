@@ -30,7 +30,7 @@ public class UriRequestService {
             final String url = String.valueOf(UriComponentsBuilder.newInstance()
                     .scheme("http")
                     .host(uri)
-                    .port(8081)
+                    .port(80)
                     .path("/api/securities/shinhan")
                     .build()
             );

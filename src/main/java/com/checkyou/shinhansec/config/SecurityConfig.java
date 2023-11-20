@@ -41,6 +41,7 @@ public class SecurityConfig {
                 //각 ROLE에 따라 접근 구분
                 .antMatchers("/api/account/*").hasRole("USER")
                 .antMatchers("/api/user/*").permitAll()
+                .antMatchers("/api/user/auth/*").permitAll()
                 .antMatchers("/api/main/*").permitAll()
                 .antMatchers("/*").permitAll()
                 .anyRequest().authenticated()

@@ -28,4 +28,9 @@ public class MemberController {
         return memberService.checkEmail(confirmRequestDTO.getEmail());
     }
 
+    @GetMapping("/auth/{email}")
+    public ApiResponse<Boolean> checkAuthentication(@PathVariable("email") String email) throws Exception{
+        return memberService.checkAuthentication(email);
+    }
+
 }
