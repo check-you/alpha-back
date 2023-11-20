@@ -18,14 +18,6 @@ import java.security.Principal;
 public class AccountController {
     private final MemberService memberService;
     private final SearchService searchService;
-
-    @GetMapping("/search")
-    public ApiResponse<SearchResponse> searchAccount(@RequestBody SearchRequestDTO request){
-
-        SearchResponse data = searchService.searchInformation(request);
-
-        return ApiResponse.success(data);
-    }
     @PostMapping("")
     public ApiResponse<String> createAccount(@RequestBody AccountRequestDTO request, Principal principal) throws Exception {
         return memberService.createNewAccount(request, principal.getName());
