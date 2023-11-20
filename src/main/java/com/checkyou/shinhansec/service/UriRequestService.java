@@ -6,6 +6,7 @@ import com.checkyou.shinhansec.DTO.SearchRequestDTO;
 import com.checkyou.shinhansec.DTO.SearchResponse;
 import com.checkyou.shinhansec.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,12 +23,13 @@ import java.net.URI;
 public class UriRequestService {
 
     public final UriBuilderService uriBuilderService;
-
+    @Value("${request.domain}")
+    private String uri;
     public ApiResponse<SearchResponse> getInformation(SearchRequestDTO request) throws Exception {
         try {
             final String url = String.valueOf(UriComponentsBuilder.newInstance()
                     .scheme("http")
-                    .host("localhost")
+                    .host(uri)
                     .port(8081)
                     .path("/api/securities/shinhan")
                     .build()
