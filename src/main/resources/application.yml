@@ -40,3 +40,5 @@ jwt:
 email:
   domain: ${EMAIL_DOMAIN}
   url: ${EMAIL_URL}
+request:
+  domain: ${REQUEST_DOMAIN}
