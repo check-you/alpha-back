@@ -23,10 +23,9 @@ public class MemberController {
     public ResponseEntity signIn(@RequestBody SignInRequestDTO userSignInRequestDto) throws Exception {
         return memberService.signIn(userSignInRequestDto.getEmail(), userSignInRequestDto.getName(), userSignInRequestDto.getPhoneNumber(), userSignInRequestDto.getPassword());
     }
-    @GetMapping("/confirm-email")
-    public ResponseEntity confirmEmail(@RequestParam(required = false, value = "email") String email, @RequestParam(required = false, value = "authToken") String token){
-        memberService.confirmEmail(email, token);
-        return ResponseEntity.ok().build();
+    @PostMapping("/confirm/auth")
+    public ApiResponse<Boolean> confirmAuth(@RequestBody ConfirmRequestDTO confirmRequestDTO) throws Exception {
+        return memberService.checkEmail(confirmRequestDTO.getEmail());
     }
 
 }

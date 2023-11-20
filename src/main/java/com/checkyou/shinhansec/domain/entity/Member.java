@@ -29,9 +29,6 @@ public class Member implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "account_number", length = 60)
-    private String accountNumber;
-
     @Column(name = "password", length = 255)
     @NotNull
     private String password;
