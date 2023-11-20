@@ -17,5 +17,4 @@ public class SearchResponse {
     private String businessCode;
     private List<Transaction> transactionList;
 
-
 }
