@@ -2,6 +2,7 @@ package com.checkyou.shinhansec.service;
 
 import com.checkyou.shinhansec.DTO.AccountDeleteRequestDTO;
 import com.checkyou.shinhansec.DTO.AccountRequestDTO;
+import com.checkyou.shinhansec.DTO.AccountResponseDTO;
 import com.checkyou.shinhansec.DTO.RequestPrincipalDTO;
 import com.checkyou.shinhansec.common.ApiResponse;
 import com.checkyou.shinhansec.domain.entity.Account;
@@ -26,7 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,8 +50,8 @@ public class MemberService {
             HttpHeaders headers = new HttpHeaders();
             // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
             // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-        if (passwordEncoder.matches(password, memberRepository.findByEmail(email).orElseThrow().getPassword())) {
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+            if (passwordEncoder.matches(password, memberRepository.findByEmail(email).orElseThrow().getPassword())) {
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
 
                 // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
                 // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
@@ -60,15 +65,15 @@ public class MemberService {
                 headers.set("refreshToken", tokenInfo.getRefreshToken());
                 return ResponseEntity.ok().headers(headers).build();
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             throw new Exception("로그인 요청 실패하였습니다.");
         }
         return ResponseEntity.badRequest().build();
     }
+
     @Transactional
     public ResponseEntity<String> signIn(String email, String name, String phoneNumber, String password) throws Exception {
-        if(checkDuplicateEmail(email)) //중복 이메일 있으면 false
+        if (checkDuplicateEmail(email)) //중복 이메일 있으면 false
             return ResponseEntity.badRequest().body("이미 존재하는 이메일입니다.");
 
         try {
@@ -92,8 +97,7 @@ public class MemberService {
             );
             emailService.send(emailAuth.getEmail(), emailAuth.getAuthToken());
             return ResponseEntity.ok().build();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new Exception("회원가입에 실패하였습니다.");
         }
     }
@@ -114,7 +118,7 @@ public class MemberService {
     @Transactional
     public ApiResponse<String> createNewAccount(AccountRequestDTO request, String principal) throws Exception {
         try {
-            if(checkDuplicateAccount(request.getAccount()))
+            if (checkDuplicateAccount(request.getAccount()))
                 throw new Exception("중복된 계좌 번호입니다.");
             String email = new ObjectMapper().readValue(principal, RequestPrincipalDTO.class).getNickname();
 
@@ -123,11 +127,12 @@ public class MemberService {
             Account account = Account.builder()
                     .account(request.getAccount())
                     .bank(request.getBank())
+                    .category(request.getCategory())
                     .member(member)
                     .build();
 
             return ApiResponse.success(accountRepository.save(account).getAccount() + " 계좌 생성 완료되었습니다.");
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new Exception("계좌 생성에 실패하였습니다.");
         }
     }
@@ -143,9 +148,34 @@ public class MemberService {
 
             accountRepository.delete(account);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new Exception("계좌 삭제에 실패하였습니다.");
         }
     }
 
+    public ApiResponse<Boolean> checkEmail(String email) throws Exception {
+        try {
+            return ApiResponse.success(memberRepository.findByEmail(email).orElseThrow().getEmailAuth());
+        } catch (Exception e) {
+            throw new Exception("이메일 인증이 완료되지 않았습니다.");
+        }
+    }
+
+    public ApiResponse<AccountResponseDTO> getAccounts(String email) throws Exception {
+        try {
+            Member member = memberRepository.findByEmail(email).orElseThrow();
+            List<Account> accountList = accountRepository.findByMember(member);
+
+            List<AccountResponseDTO.AccountList> list = accountList.stream()
+                    .map(account -> new AccountResponseDTO.AccountList(
+                            account.getAccount(),
+                            account.getBank(),
+                            account.getCategory()))
+                    .collect(Collectors.toList());
+
+            return ApiResponse.success(new AccountResponseDTO(accountList.size(), list));
+        } catch (Exception e) {
+            throw new Exception("에러 발생");
+        }
+    }
 }

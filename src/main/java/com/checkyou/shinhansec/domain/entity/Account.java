@@ -31,6 +31,10 @@ public class Account {
     @NotNull
     private String account;
 
+    @Column(name = "category", length = 30)
+    @NotNull
+    private String category;
+
     @ManyToOne(
             fetch = FetchType.LAZY
     )
