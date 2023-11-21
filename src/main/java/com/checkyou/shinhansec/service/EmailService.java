@@ -25,7 +25,7 @@ public class EmailService {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(email);
         simpleMailMessage.setSubject("회원 가입 이메일 인증");
-        simpleMailMessage.setText(domain + url + "?email="+email+"&authToken="+authToken);
+        simpleMailMessage.setText("아래 링크를 눌러서 이메일 인증을 완료 해주세요.\n"+domain + url + "?email="+email+"&authToken="+authToken);
 
         javaMailSender.send(simpleMailMessage);
     }
