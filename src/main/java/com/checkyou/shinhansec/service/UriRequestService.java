@@ -28,34 +28,32 @@ public class UriRequestService {
     @Value("${request.port}")
     private int port;
     public ApiResponse<SearchResponse> getInformation(SearchRequestDTO request) throws Exception {
+        final String url = String.valueOf(UriComponentsBuilder.newInstance()
+                .scheme("http")
+                .host(uri)
+                .port(port)
+                .path("/api/securities/shinhan")
+                .build()
+        );
+
+        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(url);
+        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
+
+        final WebClient webClient = WebClient.builder()
+                .uriBuilderFactory(factory)
+                .baseUrl(url)
+                .build();
+        final SearchResponse response;
         try {
-            final String url = String.valueOf(UriComponentsBuilder.newInstance()
-                    .scheme("http")
-                    .host(uri)
-                    .port(port)
-                    .path("/api/securities/shinhan")
-                    .build()
-            );
-
-            DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(url);
-            factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
-
-            final WebClient webClient = WebClient.builder()
-                    .uriBuilderFactory(factory)
-                    .baseUrl(url)
-                    .build();
-
-            final SearchResponse response = webClient.post()
+            response = webClient.post()
                     .bodyValue(request)
                     .retrieve()
                     .bodyToMono(SearchResponse.class)
                     .block();
-            if(!response.getSuccess())
-                throw new Exception("존재하는 정보가 없습니다.");
-            return ApiResponse.success(response);
-        }
-        catch (Exception e){
+        }catch (Exception e){
             throw new Exception("존재하는 정보가 없습니다.");
         }
+        return ApiResponse.success(response);
+        
     }
 }
