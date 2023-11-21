@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class AccountResponseDTO {
+    private String name;
     private int listCnt;
     private List<AccountList> accountList;
     @NoArgsConstructor

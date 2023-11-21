@@ -5,6 +5,7 @@ import com.checkyou.shinhansec.common.ApiResponse;
 import com.checkyou.shinhansec.service.MemberService;
 import com.checkyou.shinhansec.service.SearchService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -15,7 +16,10 @@ import java.util.List;
 @RequestMapping("/api/accounts")
 public class AccountController {
     private final MemberService memberService;
-
+    @GetMapping("/name/{email}")
+    public ApiResponse<String> getName(@PathVariable("email") String email) throws Exception {
+        return memberService.getName(email);
+    }
     @GetMapping("/{email}")
     public ApiResponse<AccountResponseDTO> getAccounts(@PathVariable("email") String email) throws Exception {
         return memberService.getAccounts(email);

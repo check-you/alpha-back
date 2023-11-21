@@ -173,9 +173,17 @@ public class MemberService {
                             account.getCategory()))
                     .collect(Collectors.toList());
 
-            return ApiResponse.success(new AccountResponseDTO(accountList.size(), list));
+            return ApiResponse.success(new AccountResponseDTO(member.getName(), accountList.size(), list));
         } catch (Exception e) {
             throw new Exception("에러 발생");
+        }
+    }
+
+    public ApiResponse<String> getName(String email) throws Exception {
+        try {
+            return ApiResponse.success(memberRepository.findByEmail(email).orElseThrow().getName());
+        }catch (Exception e){
+            throw new Exception("이름을 가져오는 데 실패하였습니다.");
         }
     }
 }

@@ -42,3 +42,4 @@ email:
   url: ${EMAIL_URL}
 request:
   domain: ${REQUEST_DOMAIN}
+  port: ${REQUEST_PORT}

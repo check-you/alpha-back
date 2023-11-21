@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class SearchResponse {
-    private String success;
+    private Boolean success;
     private String message;
     private Data data;
     @NoArgsConstructor

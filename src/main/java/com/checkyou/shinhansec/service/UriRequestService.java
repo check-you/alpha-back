@@ -25,12 +25,14 @@ public class UriRequestService {
     public final UriBuilderService uriBuilderService;
     @Value("${request.domain}")
     private String uri;
+    @Value("${request.port}")
+    private int port;
     public ApiResponse<SearchResponse> getInformation(SearchRequestDTO request) throws Exception {
         try {
             final String url = String.valueOf(UriComponentsBuilder.newInstance()
                     .scheme("http")
                     .host(uri)
-                    .port(8081)
+                    .port(port)
                     .path("/api/securities/shinhan")
                     .build()
             );
@@ -42,11 +44,14 @@ public class UriRequestService {
                     .uriBuilderFactory(factory)
                     .baseUrl(url)
                     .build();
+
             final SearchResponse response = webClient.post()
                     .bodyValue(request)
                     .retrieve()
                     .bodyToMono(SearchResponse.class)
                     .block();
+            if(!response.getSuccess())
+                throw new Exception("존재하는 정보가 없습니다.");
             return ApiResponse.success(response);
         }
         catch (Exception e){
