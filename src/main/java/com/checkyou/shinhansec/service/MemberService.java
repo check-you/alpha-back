@@ -137,7 +137,7 @@ public class MemberService {
         }
     }
 
-    private boolean checkDuplicateAccount(String account) {
+    public boolean checkDuplicateAccount(String account) {
         return accountRepository.findByAccount(account).isPresent();
     }
 
@@ -186,4 +186,5 @@ public class MemberService {
             throw new Exception("이름을 가져오는 데 실패하였습니다.");
         }
     }
+
 }

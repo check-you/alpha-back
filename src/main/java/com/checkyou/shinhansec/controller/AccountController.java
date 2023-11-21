@@ -20,6 +20,10 @@ public class AccountController {
     public ApiResponse<String> getName(@PathVariable("email") String email) throws Exception {
         return memberService.getName(email);
     }
+    @GetMapping("/duplicate/{account}")
+    public ApiResponse<Boolean> checkDuplicateAccount(@PathVariable("account") String account){
+        return ApiResponse.success(memberService.checkDuplicateAccount(account));
+    }
     @GetMapping("/{email}")
     public ApiResponse<AccountResponseDTO> getAccounts(@PathVariable("email") String email) throws Exception {
         return memberService.getAccounts(email);
