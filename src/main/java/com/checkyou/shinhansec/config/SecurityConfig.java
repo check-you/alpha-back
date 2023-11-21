@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .antMatchers("/api/account/*").hasRole("USER")
                 .antMatchers("/api/user/*").permitAll()
                 .antMatchers("/api/main/*").permitAll()
+                .antMatchers("/api/user/duplicate/*").permitAll()
                 .antMatchers("/*").permitAll()
                 .anyRequest().authenticated()
                 .and()

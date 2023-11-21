@@ -102,7 +102,7 @@ public class MemberService {
         }
     }
 
-    private boolean checkDuplicateEmail(String email) {
+    public boolean checkDuplicateEmail(String email) {
         return memberRepository.findByEmail(email).isPresent();
     }
 

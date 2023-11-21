@@ -28,4 +28,9 @@ public class MemberController {
         return memberService.checkEmail(confirmRequestDTO.getEmail());
     }
 
+    @GetMapping("/duplicate/{email}")
+    public ApiResponse<Boolean> checkDuplicateEmail(@PathVariable("email") String email){
+        return ApiResponse.success(memberService.checkDuplicateEmail(email));
+    }
+
 }
